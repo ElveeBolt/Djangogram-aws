@@ -1,0 +1,72 @@
+{% extends 'layouts/base.html' %}
+
+{% load static %}
+
+
+{% block layout %}
+    <div class="container mx-auto">
+          <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+          <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+              <img src="{% static 'image/logo.png' %}" class="w-8 h-8 mr-2"/>
+              DjangoGram
+          </a>
+          <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+              <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                  <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                      Create your account
+                  </h1>
+                  <form method="post">
+                    {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.username.auto_id }}">{{ form.username.label_tag }}</label>
+                            {{ form.username }}
+                            {% for error in form.username.errors %}
+                                <div class="text-danger mb-3">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                          <div class="mb-3">
+                            <label class="form-label" for="{{ form.first_name.auto_id }}">{{ form.first_name.label_tag }}</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.last_name.auto_id }}">{{ form.last_name.label_tag }}</label>
+                            {{ form.last_name }}
+                        </div>
+                          <div class="mb-3">
+                            <label class="form-label" for="{{ form.email.auto_id }}">{{ form.email.label_tag }}</label>
+                            {{ form.email }}
+                              {% for error in form.email.errors %}
+                                <div class="text-danger mb-3">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.password1.auto_id }}">{{ form.password1.label_tag }}</label>
+                            {{ form.password1 }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.password2.auto_id }}">{{ form.password2.label_tag }}</label>
+                            {{ form.password2 }}
+                            {% for error in form.password2.errors %}
+                                <div class="text-danger mb-3">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% if form.non_field_errors %}
+                            <div class="mb-3">
+                                {% for error in form.non_field_errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                      <button type="submit" class="btn btn-primary w-full mb-4">
+                          <i class="las la-plus-circle"></i>
+                          Sign up
+                      </button>
+                      <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                          Already have an account? <a href="{% url 'login' %}" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign in</a>
+                      </p>
+                  </form>
+              </div>
+          </div>
+      </div>
+    </div>
+{% endblock layout %}

@@ -1,0 +1,78 @@
+/* static/css/input.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+header {
+    @apply py-6 mb-6 border-b border-gray-200 dark:border-gray-700
+}
+
+.btn {
+    @apply flex items-center justify-center py-2.5 px-5 text-sm font-medium rounded-lg disabled:cursor-not-allowed disabled:text-gray-400
+}
+
+.btn-primary {
+    @apply text-white bg-green-500 hover:bg-green-600
+}
+
+.btn-light {
+    @apply border border-gray-200 dark:border-gray-700 bg-white hover:bg-green-600  hover:text-white
+}
+
+.btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-800
+}
+
+.btn-small{
+    @apply py-1 px-3 text-sm
+}
+
+.btn i {
+    @apply text-xl leading-none me-1
+}
+
+.text-danger {
+    @apply text-sm text-red-600 dark:text-red-500
+}
+
+.help-text {
+    @apply mt-1 text-sm text-gray-500 dark:text-gray-400
+}
+
+.link{
+    @apply text-green-500 hover:text-green-600 hover:underline
+}
+
+.form-control{
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500
+}
+
+.form-control-file{
+    @apply block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
+}
+
+.form-label{
+    @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white
+}
+
+.container{
+    @apply w-[1000px]
+}
+
+.card{
+    @apply bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700
+}
+
+.card-header {
+    @apply mb-4 pb-4 border-b border-gray-200 dark:border-gray-700
+}
+
+.card-title {
+    @apply text-xl font-bold text-gray-900 dark:text-white
+}
+
+.card-subtitle {
+    @apply text-gray-500 dark:text-gray-400
+}

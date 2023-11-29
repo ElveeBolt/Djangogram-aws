@@ -1,0 +1,47 @@
+{% extends 'layouts/grid2_layout.html' %}
+
+{% load static %}
+
+
+{% block title %}About: {{ profile.first_name }} {{ profile.last_name }}{% endblock title %}
+{% block subtitle %}{{ subtitle }}{% endblock subtitle %}
+
+{% block content %}
+    {% if posts %}
+        <div class="grid grid-cols-3 gap-4">
+        {% for post in posts %}
+        <div class="card mb-4 overflow-hidden">
+            <a href="{% url 'post' pk=post.pk %}" class="flex relative">
+                <span class="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                    {{ post.images.count }}
+                </span>
+                <img src="{{ post.images.all.0 }}" alt="" class="w-full">
+            </a>
+        </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        {% include 'widgets/empty_content.html' %}
+    {% endif %}
+
+{% endblock content %}
+
+{% block sideright %}
+    <div class="card mb-4">
+        <div class="p-4">
+            <div class="flex justify-center mb-4">
+              {% if profile.avatar %}
+                <img class="w-28 h-28 rounded-full border border-gray-200" src="{{ profile.avatar.url }}">
+              {% else %}
+                <img class="w-28 h-28 rounded-full border border-gray-200" src="{% static 'image/no_avatar.png' %}">
+              {% endif %}
+            </div>
+            <div>
+                <div><span class="text-gray-500 dark:text-gray-400">Full name:</span> {{ profile.first_name }} {{ profile.last_name }}</div>
+                <div><span class="text-gray-500 dark:text-gray-400">Username:</span> @{{ profile.username }}</div>
+                <div><span class="text-gray-500 dark:text-gray-400">Bio:</span> {{ profile.bio }}</div>
+                <div><span class="text-gray-500 dark:text-gray-400">Date joined:</span> {{ profile.date_joined }}</div>
+            </div>
+        </div>
+    </div>
+{% endblock sideright %}

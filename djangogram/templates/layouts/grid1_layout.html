@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block layout %}
+    {% include "widgets/navbar.html" %}
+    <div class="container mx-auto px-4">
+        <header>
+            <h1 class="font-extrabold text-3xl mb-2 dark:text-white">{% block title %}{% endblock title %}</h1>
+            <div class="text-lg text-gray-500 dark:text-gray-400">{% block subtitle %}{% endblock subtitle %}</div>
+        </header>
+        {% block content %}{% endblock content %}
+    </div>
+    {% include "widgets/footer.html" %}
+{% endblock layout %}

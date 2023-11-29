@@ -1,0 +1,39 @@
+{% extends 'layouts/grid2_layout.html' %}
+
+{% load static %}
+
+
+{% block title %}{{ title }}{% endblock title %}
+{% block subtitle %}{{ subtitle }}{% endblock subtitle %}
+
+{% block content %}
+    <div class="card mb-4">
+        <div class="p-4">
+            <div class="card-header">
+                <h2 class="card-title">Create new post</h2>
+                <div class="card-subtitle">For send post please fill the form</div>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.title.auto_id }}">{{ form.title.label_tag }}</label>
+                    {{ form.title }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.description.auto_id }}">{{ form.description.label_tag }}</label>
+                    {{ form.description }}
+                    <div class="help-text">{{ form.description.help_text }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.tags.auto_id }}">{{ form.tags.label_tag }}</label>
+                    {{ form.tags }}
+                    <div class="help-text">{{ form.tags.help_text }}</div>
+                </div>
+                {{ form_images }}
+                <div class="flex">
+                    <button type="submit" class="btn btn-primary"><i class="las la-save"></i>Save post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

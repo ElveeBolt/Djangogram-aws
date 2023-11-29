@@ -1,0 +1,39 @@
+{% extends 'layouts/grid2_layout.html' %}
+
+{% load static %}
+
+
+{% block title %}{{ title }}{% endblock title %}
+{% block subtitle %}{{ subtitle }}{% endblock subtitle %}
+
+{% block content %}
+    <div class="grid grid-cols-2 gap-4">
+        {% for user in users %}
+        <div class="card">
+            <div class="p-4 flex items-center">
+                  <a href="{% url 'user' pk=user.pk %}">
+                    {% if user.avatar %}
+                    <img class="w-16 h-16 rounded-full border border-gray-200" src="{{ user.avatar.url }}">
+                  {% else %}
+                    <img class="w-16 h-16 rounded-full border border-gray-200" src="{% static 'image/no_avatar.png' %}">
+                  {% endif %}
+                  </a>
+                  <div class="flex-1 ps-4">
+                      <h3 class="font-bold text-gray-900 dark:text-white">
+                       <a href="{% url 'user' pk=user.pk %}">{{ user.first_name }} {{ user.last_name }}</a>
+                      </h3>
+                      <div class="flex justify-between">
+                        <span class="text-sm text-gray-400">@{{ user.username }}</span>
+                          <a class="link text-sm" href="{% url 'user' pk=user.pk %}">View</a>
+                      </div>
+                  </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include 'widgets/pagination.html' %}
+{% endblock content %}
+
+{% block sideright %}
+    {% include 'apps/post/post_widget_create.html' %}
+{% endblock sideright%}

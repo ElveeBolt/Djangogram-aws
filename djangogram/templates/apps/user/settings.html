@@ -1,0 +1,52 @@
+{% extends 'layouts/grid2_layout.html' %}
+
+{% load static %}
+
+
+{% block title %}{{ title }}{% endblock title %}
+{% block subtitle %}{{ subtitle }}{% endblock subtitle %}
+
+{% block content %}
+    <div class="card mb-4">
+        <div class="p-4">
+            <div class="card-header">
+                <h2 class="card-title">Update profile</h2>
+                <div class="card-subtitle">For update profile please fill the form</div>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="form-label" for="{{ form.first_name.auto_id }}">{{ form.first_name.label_tag }}</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div>
+                        <label class="form-label" for="{{ form.last_name.auto_id }}">{{ form.last_name.label_tag }}</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label" for="{{ form.bio.auto_id }}">{{ form.bio.label_tag }}</label>
+                    {{ form.bio }}
+                </div>
+                <div class="flex items-center mb-4 space-x-4">
+                    <div>
+                      {% if user.avatar %}
+                        <img class="w-20 h-20 rounded-full" src="{{ user.avatar.url }}">
+                      {% else %}
+                        <img class="w-20 h-20 rounded-full" src="{% static 'image/no_avatar.png' %}">
+                      {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <label class="form-label" for="{{ form.avatar.auto_id }}">{{ form.avatar.label_tag }}</label>
+                        {{ form.avatar }}
+                        <div class="help-text">{{ form.avatar.help_text }}</div>
+                    </div>
+                </div>
+                <div class="flex">
+                    <button type="submit" class="btn btn-primary"><i class="las la-save"></i>Update profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

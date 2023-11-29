@@ -1,0 +1,46 @@
+{% extends 'layouts/grid3_layout.html' %}
+
+{% block title %}{{ title }}{% endblock title %}
+{% block subtitle %}{{ subtitle }}{% endblock subtitle %}
+
+{% block content %}
+    {% for post in posts %}
+    <div class="card mb-4">
+        <div class="p-4">
+            <div class="flex items-center">
+                <img class="rounded-full w-9 h-9" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png" alt="profile picture">
+                <div class="font-medium dark:text-white ms-3 flex-1">
+                    <div><a href="{% url 'post' pk=post.pk %}">{{ post.user.first_name }} {{ post.user.last_name }}</a></div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 ">@{{ post.user.username }}</div>
+                </div>
+                <a href="{% url 'user' pk=post.user.pk %}" class="btn btn-small btn-light">
+                    <i class="las la-user-circle"></i>View profile
+                </a>
+            </div>
+        </div>
+        <a href="{% url 'post' pk=post.pk %}" class="flex relative">
+            <span class="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                {{ post.images.count }}
+            </span>
+            <img src="{{ post.images.all.0 }}" alt="" class="w-full">
+        </a>
+        <div class="p-4">
+            <div class="mb-3 font-semibold"><a href="{% url 'post' pk=post.pk %}">{{ post.title }}</a></div>
+            {% if post.tags %}
+            <div class="mb-3">
+                {% for tag in post.tags.all %}
+                    <a class="bg-green-100 text-green-800 text-xs font-medium me-1 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 hover:bg-green-600 hover:text-white" href="{% url 'posts' %}?tag={{ tag }}">#{{ tag }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="mb-3 text-sm">{{ post.description | truncatechars:150}}</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">{{ post.date_publish }}</div>
+        </div>
+    </div>
+    {% endfor %}
+    {% include 'widgets/pagination.html' %}
+{% endblock content %}
+
+{% block sideright %}
+    {% include 'apps/post/post_widget_create.html' %}
+{% endblock sideright%}
