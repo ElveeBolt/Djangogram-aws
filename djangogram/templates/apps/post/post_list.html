@@ -1,5 +1,7 @@
 {% extends 'layouts/grid3_layout.html' %}
 
+{% load static %}
+
 {% block title %}{{ title }}{% endblock title %}
 {% block subtitle %}{{ subtitle }}{% endblock subtitle %}
 
@@ -8,7 +10,11 @@
     <div class="card mb-4">
         <div class="p-4">
             <div class="flex items-center">
-                <img class="rounded-full w-9 h-9" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png" alt="profile picture">
+                  {% if post.user.avatar %}
+                    <img class="rounded-full w-9 h-9" src="{{ post.user.avatar.url }}">
+                  {% else %}
+                    <img class="rounded-full w-9 h-9" src="{% static 'image/no_avatar.png' %}">
+                  {% endif %}
                 <div class="font-medium dark:text-white ms-3 flex-1">
                     <div><a href="{% url 'post' pk=post.pk %}">{{ post.user.first_name }} {{ post.user.last_name }}</a></div>
                     <div class="text-sm text-gray-500 dark:text-gray-400 ">@{{ post.user.username }}</div>
@@ -19,10 +25,10 @@
             </div>
         </div>
         <a href="{% url 'post' pk=post.pk %}" class="flex relative">
-            <span class="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+            <span class="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-blue-300">
                 {{ post.images.count }}
             </span>
-            <img src="{{ post.images.all.0 }}" alt="" class="w-full">
+            <img src="{{ post.images.all.first.thumbnail.url }}" alt="" class="w-full">
         </a>
         <div class="p-4">
             <div class="mb-3 font-semibold"><a href="{% url 'post' pk=post.pk %}">{{ post.title }}</a></div>

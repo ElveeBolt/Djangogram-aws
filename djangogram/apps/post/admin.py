@@ -13,9 +13,15 @@ class PostAdmin(admin.ModelAdmin):
     inlines = (PostImageAdminInline,)
 
 
+class PostImageAdmin(admin.ModelAdmin):
+    list_display = ('post', 'image', 'thumbnail')
+    readonly_fields = ('image_preview',)
+
+
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('user', 'post', 'comment')
 
 
 admin.site.register(Post, PostAdmin)
+admin.site.register(PostImage, PostImageAdmin)
 admin.site.register(Comment, CommentAdmin)

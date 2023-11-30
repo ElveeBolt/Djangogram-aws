@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, FormView, DeleteView, UpdateView
@@ -8,9 +9,8 @@ from django.views.generic.detail import SingleObjectMixin
 from django.contrib import messages
 from django.conf import settings
 
-
 from .models import Post, Comment
-from .forms import PostForm, CommentForm, PostImageFormSet
+from .forms import PostForm, CommentForm, PostImageFormSet, PostImageUpdateFormSet
 
 
 # Create your views here.
@@ -53,6 +53,11 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm(initial={'post': self.object, 'user': self.request.user})
+        liked = False
+        if self.object.likes.filter(id=self.request.user.id).exists():
+            liked = True
+        context['number_of_likes'] = self.object.number_of_likes()
+        context['post_is_liked'] = liked
         return context
 
 
@@ -104,10 +109,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
-    # def form_valid(self, form):
-    #     form.instance.user = self.request.user
-    #     return super().form_valid(form)
-
 
 class PostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Post
@@ -116,17 +117,17 @@ class PostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('posts')
     success_message = 'Your post was successfully updated'
     extra_context = {
-        'title': 'Create post',
-        'subtitle': 'Create your post in Djangogram'
+        'title': 'Update post',
+        'subtitle': 'Update your post in Djangogram'
     }
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form_images'] = PostImageFormSet()
+        context['form_images'] = PostImageUpdateFormSet(instance=self.object)
         return context
 
     def form_valid(self, form):
-        form_img = PostImageFormSet(self.request.POST, self.request.FILES)
+        form_img = PostImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
         with transaction.atomic():
             form.instance.user = self.request.user
             self.object = form.save()
@@ -138,6 +139,18 @@ class PostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('post', kwargs={'pk': self.kwargs['pk']})
+
+
+class PostLikeView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        post = Post.objects.get(pk=request.POST.get('post_id'))
+
+        if post.likes.filter(id=request.user.id).exists():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+
+        return redirect('post', pk=post.pk)
 
 
 class PostDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):

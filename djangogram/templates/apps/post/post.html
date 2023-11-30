@@ -42,14 +42,27 @@
         {% else %}
             <img src="{{ post.images.all.0.image.url }}" class="block w-full rounded-xl" alt="...">
         {% endif %}
+        <div class="p-4 flex justify-between items-center">
+            <div>{{ number_of_likes }} Like{{ number_of_likes|pluralize }}</div>
+            <div>
+              <form action="{% url 'post-like' pk=post.pk %}" method="post">
+                {% csrf_token %}
+                {% if post_is_liked %}
+                <button type="submit" name="post_id" value="{{ post.pk }}" class="btn btn-light btn-small text-red-400"><i class="las la-thumbs-down"></i>Dislike</button>
+                {% else %}
+                <button type="submit" name="post_id" value="{{ post.pk }}" class="btn btn-light btn-small text-red-400"><i class="las la-thumbs-up"></i>Like</button>
+                {% endif %}
+              </form>
+            </div>
+        </div>
     </div>
+    {% if post.comments.all %}
     <div class="card mb-4">
         <div class="p-4">
             <div class="card-header">
                 <h2 class="card-title">Comments ({{ post.comments.count }})</h2>
                 <div class="card-subtitle">User comments for post</div>
             </div>
-            {% if post.comments.all %}
             {% for comment in post.comments.all %}
              <div class="mb-5 text-base dark:bg-gray-900">
                 <div class="flex items-center justify-between mb-2">
@@ -66,7 +79,7 @@
                     </div>
                     {% if user == comment.user %}
                     <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="btn btn-small btn-light" type="button" data-modal-attr-action="{% url 'comment-delete' pk=comment.pk %}" data-modal-attr-title="{{ comment.comment }}">
-                        Delete
+                        <i class="las la-trash-alt"></i>Delete
                     </button>
                     {% endif %}
                 </div>
@@ -75,11 +88,9 @@
                 </div>
             </div>
             {% endfor %}
-            {% else %}
-                Empty
-            {% endif %}
         </div>
     </div>
+    {% endif %}
     <div class="card mb-4">
         <div class="p-4">
             <div class="card-header">
@@ -104,7 +115,10 @@
                     <div class="text-danger mb-3">{{ error }}</div>
                 {% endfor %}
                 <div class="flex">
-                    <button type="submit" class="btn btn-primary">Create comment</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="las la-plus-circle"></i>
+                        Create comment
+                    </button>
                 </div>
             </form>
         </div>
@@ -140,9 +154,13 @@
     {% if user == post.user %}
     <div class="flex space-x-3">
         <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="btn btn-light" type="button" data-modal-attr-action="{% url 'post-delete' pk=post.pk %}" data-modal-attr-title="{{ post.title }}">
+            <i class="las la-trash-alt"></i>
             Delete post
         </button>
-        <a href="{% url 'post-update' pk=post.pk %}" class="btn btn-light">Update post</a>
+        <a href="{% url 'post-update' pk=post.pk %}" class="btn btn-light">
+            <i class="las la-edit"></i>
+            Update post
+        </a>
     </div>
     {% endif %}
 {% endblock %}

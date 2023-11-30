@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import inlineformset_factory
+from taggit.forms import TagWidget
 
 from .models import Post, Comment, PostImage
 
@@ -20,7 +21,7 @@ class PostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Enter title...', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': 'Enter comment...', 'class': 'form-control', 'rows': 5}),
-            'tags': forms.TextInput(attrs={'placeholder': 'Enter tags...', 'class': 'form-control'}),
+            'tags': TagWidget(attrs={'placeholder': 'Enter tags...', 'class': 'form-control'}),
         }
 
 
@@ -29,7 +30,7 @@ class PostImageForm(forms.ModelForm):
         model = PostImage
         fields = ['image']
         labels = {
-            'image': 'Image',
+            'image': 'Image'
         }
         widgets = {
             'image': forms.FileInput(attrs={'placeholder': 'Enter file...', 'class': 'form-control-file', 'type': 'file'})
@@ -42,8 +43,10 @@ PostImageFormSet = inlineformset_factory(
     form=PostImageForm,
     fields=['image'],
     extra=3,
-    can_delete=True
+    can_delete=True,
 )
+
+PostImageUpdateFormSet = inlineformset_factory(Post, PostImage, fields=["image"], extra=0)
 
 
 class CommentForm(forms.ModelForm):

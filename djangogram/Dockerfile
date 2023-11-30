@@ -12,3 +12,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
+
+COPY entrypoint.sh .
+
+RUN chmod +x /mnt/data/djangogram/entrypoint.sh
+
+ENTRYPOINT ["/mnt/data/djangogram/entrypoint.sh"]

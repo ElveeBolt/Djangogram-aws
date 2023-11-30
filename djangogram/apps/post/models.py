@@ -1,7 +1,13 @@
+import os
+import sys
+from io import BytesIO
+
 from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils.safestring import mark_safe
 from taggit.managers import TaggableManager
+from PIL import Image
 
 from apps.user.models import User
 
@@ -13,9 +19,13 @@ class Post(models.Model):
     description = models.TextField(null=False, blank=True, verbose_name='Description')
     date_publish = models.DateTimeField(auto_now_add=True, verbose_name='Date publish')
     tags = TaggableManager()
+    likes = models.ManyToManyField(User, related_name='likes')
 
     def __str__(self):
         return self.title
+
+    def number_of_likes(self):
+        return self.likes.count()
 
     class Meta:
         ordering = ['-date_publish']
@@ -27,6 +37,7 @@ class Post(models.Model):
 class PostImage(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Post', related_name='images')
     image = models.ImageField(null=False, max_length=255, upload_to='posts', verbose_name='Image')
+    thumbnail = models.ImageField(upload_to='posts/thumbnails')
 
     def __str__(self):
         return self.image.url
@@ -36,6 +47,30 @@ class PostImage(models.Model):
 
     image_preview.allow_tags = True
     image_preview.short_description = 'Image'
+
+    def save(self, **kwargs):
+        width = 600
+        height = 600
+
+        output_size = (width, height)
+        output_thumb = BytesIO()
+
+        img = Image.open(self.image)
+        img_name = os.path.splitext(self.image.name)[0]
+
+        if img.height > height or img.width > width:
+            img.thumbnail(output_size, Image.Resampling.LANCZOS)
+            img.save(output_thumb, format=img.format, quality=90)
+
+        self.thumbnail = InMemoryUploadedFile(
+            file=output_thumb,
+            field_name='ImageField',
+            name=f"{img_name}_thumb.{img.format}",
+            content_type='image/jpeg',
+            size=sys.getsizeof(output_thumb),
+            charset=None
+        )
+        super().save()
 
     class Meta:
         db_table = 'post_images'
