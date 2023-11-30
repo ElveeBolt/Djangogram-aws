@@ -10,11 +10,14 @@
     {% if posts %}
         <div class="grid grid-cols-3 gap-4">
         {% for post in posts %}
-        <div class="card mb-4 overflow-hidden max-h-72">
-            <a href="{% url 'post' pk=post.pk %}" class="flex relative h-full">
-                <span class="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                    {{ post.images.count }}
-                </span>
+        <div class="card mb-4 overflow-hidden max-h-72 relative">
+            <span class="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                {{ post.images.count }}
+            </span>
+            {% if user == post.user %}
+            <a href="{% url 'post-update' pk=post.pk %}" class="btn btn-light btn-small absolute bottom-2 right-2 z-10"><i class="las la-edit"></i>Edit</a>
+            {% endif %}
+            <a href="{% url 'post' pk=post.pk %}" class="flex h-full">
                 <img src="{{ post.images.all.first.thumbnail.url }}" alt="" class="h-full max-w-none">
             </a>
         </div>

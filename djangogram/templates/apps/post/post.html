@@ -152,7 +152,7 @@
         </div>
     </div>
     {% if user == post.user %}
-    <div class="flex space-x-3">
+    <div class="flex space-x-3 mb-4">
         <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="btn btn-light" type="button" data-modal-attr-action="{% url 'post-delete' pk=post.pk %}" data-modal-attr-title="{{ post.title }}">
             <i class="las la-trash-alt"></i>
             Delete post

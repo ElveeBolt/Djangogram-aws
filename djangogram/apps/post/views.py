@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db import transaction
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -9,8 +8,8 @@ from django.views.generic.detail import SingleObjectMixin
 from django.contrib import messages
 from django.conf import settings
 
-from .models import Post, Comment
-from .forms import PostForm, CommentForm, PostImageFormSet, PostImageUpdateFormSet
+from .models import Post, Comment, PostImage
+from .forms import PostForm, CommentForm, PostImageForm
 
 
 # Create your views here.
@@ -86,26 +85,28 @@ class PostCommentFormView(SingleObjectMixin, FormView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'apps/post/post_form.html'
-    form_class = PostForm
+    form_class = PostImageForm
     success_url = reverse_lazy('posts')
     extra_context = {
         'title': 'Create post',
         'subtitle': 'Create your post in Djangogram'
     }
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form_images'] = PostImageFormSet()
-        return context
+    def post(self, request, *args, **kwargs):
+        form = PostImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
     def form_valid(self, form):
-        form_img = PostImageFormSet(self.request.POST, self.request.FILES)
-        with transaction.atomic():
-            form.instance.user = self.request.user
-            self.object = form.save()
-            if form_img.is_valid():
-                form_img.instance = self.object
-                form_img.save()
+        post = form.save(commit=False)
+        post.user = self.request.user
+        post.save()
+
+        if self.request.FILES:
+            for file in self.request.FILES.getlist('image'):
+                PostImage.objects.create(image=file, post=post)
 
         return super().form_valid(form)
 
@@ -123,19 +124,8 @@ class PostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form_images'] = PostImageUpdateFormSet(instance=self.object)
+        context['images'] = PostImage.objects.filter(post=self.get_object()).all()
         return context
-
-    def form_valid(self, form):
-        form_img = PostImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
-        with transaction.atomic():
-            form.instance.user = self.request.user
-            self.object = form.save()
-            if form_img.is_valid():
-                form_img.instance = self.object
-                form_img.save()
-
-        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('post', kwargs={'pk': self.kwargs['pk']})

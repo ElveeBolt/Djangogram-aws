@@ -29,7 +29,20 @@
                     {{ form.tags }}
                     <div class="help-text">{{ form.tags.help_text }}</div>
                 </div>
-                {{ form_images }}
+                {% if images %}
+                    <div class="grid grid-cols-4 gap-4">
+                    {% for image in images %}
+                        <div class="overflow-hidden h-32 rounded-xl">
+                            <img src="{{ image.image.url }}" alt="" class="w-full h-full">
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.image.auto_id }}">{{ form.image.label_tag }}</label>
+                    {{ form.image }}
+                    <div class="help-text">{{ form.image.help_text }}</div>
+                </div>
                 <div class="flex">
                     <button type="submit" class="btn btn-primary"><i class="las la-save"></i>Save post</button>
                 </div>
