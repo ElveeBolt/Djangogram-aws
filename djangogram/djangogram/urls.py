@@ -18,11 +18,12 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from apps.post.views import PostListView
+from apps.post.views import PostFriendListView
+
 
 
 urlpatterns = [
-    path('', PostListView.as_view(), name='index'),
+    path('', PostFriendListView.as_view(), name='index'),
     path('posts/', include('apps.post.urls')),
     path('users/', include('apps.user.urls')),
     path('admin/', admin.site.urls),

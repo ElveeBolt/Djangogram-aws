@@ -2,6 +2,7 @@ import os
 import sys
 from io import BytesIO
 
+from cloudinary.models import CloudinaryField
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
@@ -36,8 +37,10 @@ class Post(models.Model):
 
 class PostImage(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Post', related_name='images')
-    image = models.ImageField(null=False, max_length=255, upload_to='posts', verbose_name='Image')
-    thumbnail = models.ImageField(upload_to='posts/thumbnails')
+    # image = models.ImageField(null=False, max_length=255, upload_to='posts', verbose_name='Image')
+    image = CloudinaryField('posts', null=False, max_length=255)
+    # thumbnail = models.ImageField(upload_to='posts/thumbnails')
+    thumbnail = CloudinaryField('posts/thumbnails')
 
     def __str__(self):
         return self.image.url

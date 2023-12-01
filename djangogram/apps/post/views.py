@@ -10,6 +10,7 @@ from django.conf import settings
 
 from .models import Post, Comment, PostImage
 from .forms import PostForm, CommentForm, PostImageForm
+from ..user.models import UserFriend
 
 
 # Create your views here.
@@ -155,3 +156,18 @@ class PostCommentDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView)
 
     def get_success_url(self):
         return reverse_lazy('post', kwargs={'pk': self.object.post.pk})
+
+
+class PostFriendListView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'apps/post/post_list.html'
+    context_object_name = 'posts'
+    paginate_by = settings.PAGINATE_COUNT
+    extra_context = {
+        'title': 'Posts of my friends',
+        'subtitle': 'List of posts'
+    }
+
+    def get_queryset(self, *args, **kwargs):
+        friends = UserFriend.objects.filter(from_user=self.request.user).values_list('id', flat=True)
+        return Post.objects.filter(user_id__in=friends).all()

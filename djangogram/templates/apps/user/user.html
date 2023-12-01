@@ -39,12 +39,22 @@
                 <img class="w-28 h-28 rounded-full border border-gray-200" src="{% static 'image/no_avatar.png' %}">
               {% endif %}
             </div>
-            <div>
+            <div class="mb-4">
                 <div><span class="text-gray-500 dark:text-gray-400">Full name:</span> {{ profile.first_name }} {{ profile.last_name }}</div>
                 <div><span class="text-gray-500 dark:text-gray-400">Username:</span> @{{ profile.username }}</div>
                 <div><span class="text-gray-500 dark:text-gray-400">Bio:</span> {{ profile.bio }}</div>
                 <div><span class="text-gray-500 dark:text-gray-400">Date joined:</span> {{ profile.date_joined }}</div>
             </div>
+            {% if user != profile %}
+              <form action="{% url 'user-friend-action' pk=profile.pk %}" method="post">
+                {% csrf_token %}
+                {% if profile_if_friend %}
+                <button type="submit" name="profile_id" value="{{ profile.pk }}" class="btn btn-light text-red-400"><i class="las la-thumbs-down"></i>Unfollow</button>
+                {% else %}
+                <button type="submit" name="profile_id" value="{{ profile.pk }}" class="btn btn-light text-red-400"><i class="las la-thumbs-up"></i>Follow</button>
+                {% endif %}
+              </form>
+            {% endif %}
         </div>
     </div>
 {% endblock sideright %}

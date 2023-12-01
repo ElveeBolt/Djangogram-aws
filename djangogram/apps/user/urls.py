@@ -1,11 +1,13 @@
 from django.urls import path
 from .views import UserDetailView, UserListView, UserSettingsView, UserLoginView, UserSignUpView, UserLogoutView, \
-    UserSignupVerifySuccessView, UserSignupVerifyInvalidView, UserSignupVerifyView
+    UserSignupVerifySuccessView, UserSignupVerifyInvalidView, UserSignupVerifyView, UserFriendListView, UserFriendActionView
 
 urlpatterns = [
     path('', UserListView.as_view(), name='users'),
     path('<int:pk>', UserDetailView.as_view(), name='user'),
     path('settings/', UserSettingsView.as_view(), name='user-settings'),
+    path('friends/', UserFriendListView.as_view(), name='user-friends'),
+    path('friends/<int:pk>/action', UserFriendActionView.as_view(), name='user-friend-action'),
 
     path('login/', UserLoginView.as_view(), name='login'),
     path('signup/', UserSignUpView.as_view(), name='signup'),

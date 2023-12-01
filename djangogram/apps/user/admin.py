@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as UserAdminOriginal
-from .models import User
+from .models import User, UserFriend
 
 
 # Register your models here.
@@ -30,4 +30,9 @@ class UserAdmin(UserAdminOriginal):
     )
 
 
+class UserFriendAdmin(admin.ModelAdmin):
+    list_display = ['from_user', 'to_user', 'date_created']
+
+
 admin.site.register(User, UserAdmin)
+admin.site.register(UserFriend, UserFriendAdmin)

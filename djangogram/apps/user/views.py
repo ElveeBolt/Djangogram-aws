@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, FormView, TemplateView
 from django.contrib.auth.tokens import default_token_generator
 
-from .models import User
+from .models import User, UserFriend
 from .forms import LoginForm, SignUpForm, UserUpdateForm
 from apps.post.models import Post
 
@@ -97,6 +97,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['posts'] = self.get_queryset_posts()
+        context['profile_if_friend'] = UserFriend.objects.filter(from_user=self.request.user, to_user=self.object).exists()
         return context
 
     def get_queryset_posts(self):
@@ -136,3 +137,32 @@ class UserSettingsView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+class UserFriendListView(LoginRequiredMixin, ListView):
+    model = User
+    template_name = 'apps/user/user_list.html'
+    context_object_name = 'users'
+    paginate_by = settings.PAGINATE_COUNT
+    extra_context = {
+        'title': 'My friends',
+        'subtitle': 'List of your friends'
+    }
+
+    def get_queryset(self, **kwargs):
+        friends = UserFriend.objects.filter(from_user=self.request.user).values_list('id', flat=True)
+        return User.objects.filter(id__in=friends)
+
+
+class UserFriendActionView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        to_user = User.objects.get(pk=request.POST.get('profile_id'))
+
+        try:
+            friend = UserFriend.objects.get(from_user=self.request.user, to_user=to_user)
+            friend.delete()
+        except UserFriend.DoesNotExist:
+            friend = UserFriend.objects.create(from_user=self.request.user, to_user=to_user)
+            print(friend)
+
+        return redirect('user', pk=friend.to_user.pk)
