@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView, LoginView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
@@ -156,13 +156,16 @@ class UserFriendListView(LoginRequiredMixin, ListView):
 
 class UserFriendActionView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
-        to_user = User.objects.get(pk=request.POST.get('profile_id'))
+        to_user = User.objects.get(pk=kwargs.get('pk'))
 
         try:
             friend = UserFriend.objects.get(from_user=self.request.user, to_user=to_user)
             friend.delete()
+            status = False
         except UserFriend.DoesNotExist:
-            friend = UserFriend.objects.create(from_user=self.request.user, to_user=to_user)
-            print(friend)
+            UserFriend.objects.create(from_user=self.request.user, to_user=to_user)
+            status = True
 
-        return redirect('user', pk=friend.to_user.pk)
+        return JsonResponse({
+            'status': status,
+        })

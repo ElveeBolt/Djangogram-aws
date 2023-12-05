@@ -1,11 +1,19 @@
 {
   "scripts": {
-    "dev": "npx tailwindcss -i ./djangogram/static/css/input.css -o ./djangogram/static/css/styles.css --watch"
+    "dev": "npx tailwindcss -i ./djangogram/static/css/input.css -o ./djangogram/static/css/styles.css --watch",
+    "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
     "tailwindcss": "^3.3.5"
   },
   "dependencies": {
-    "flowbite": "^2.2.0"
+    "css-loader": "^6.8.1",
+    "expose-loader": "^4.1.0",
+    "flowbite": "^2.2.0",
+    "jquery": "^3.7.1",
+    "mini-css-extract-plugin": "^2.7.6",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   }
 }

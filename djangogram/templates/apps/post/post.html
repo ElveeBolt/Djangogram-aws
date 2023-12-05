@@ -43,19 +43,22 @@
             <img src="{{ post.images.all.0.image.url }}" class="block w-full rounded-xl" alt="...">
         {% endif %}
         <div class="p-4 flex justify-between items-center">
-            <div>{{ number_of_likes }} Like{{ number_of_likes|pluralize }}</div>
+            <div id="post-like-count"><span>{{ number_of_likes }}</span> Like{{ number_of_likes|pluralize }}</div>
             <div>
-              <form action="{% url 'post-like' pk=post.pk %}" method="post">
+              <form id="like-form" action="{% url 'post-like' pk=post.pk %}" method="post">
                 {% csrf_token %}
-                {% if post_is_liked %}
-                <button type="submit" name="post_id" value="{{ post.pk }}" class="btn btn-light btn-small text-red-400"><i class="las la-thumbs-down"></i>Dislike</button>
-                {% else %}
-                <button type="submit" name="post_id" value="{{ post.pk }}" class="btn btn-light btn-small text-red-400"><i class="las la-thumbs-up"></i>Like</button>
-                {% endif %}
+                  <button type="submit" class="btn btn-light btn-small text-red-400">
+                      {% if post_is_liked %}
+                          <i class="las la-thumbs-down"></i>Dislike
+                      {% else %}
+                          <i class="las la-thumbs-up"></i>Like
+                      {% endif %}
+                  </button>
               </form>
             </div>
         </div>
     </div>
+
     {% if post.comments.all %}
     <div class="card mb-4">
         <div class="p-4">

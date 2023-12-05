@@ -46,12 +46,12 @@
                 <div><span class="text-gray-500 dark:text-gray-400">Date joined:</span> {{ profile.date_joined }}</div>
             </div>
             {% if user != profile %}
-              <form action="{% url 'user-friend-action' pk=profile.pk %}" method="post">
+              <form id="follow-form" action="{% url 'user-friend-action' pk=profile.pk %}" method="post">
                 {% csrf_token %}
                 {% if profile_if_friend %}
-                <button type="submit" name="profile_id" value="{{ profile.pk }}" class="btn btn-light text-red-400"><i class="las la-thumbs-down"></i>Unfollow</button>
+                <button type="submit" class="btn btn-light text-red-400"><i class="las la-thumbs-down"></i>Unfollow</button>
                 {% else %}
-                <button type="submit" name="profile_id" value="{{ profile.pk }}" class="btn btn-light text-red-400"><i class="las la-thumbs-up"></i>Follow</button>
+                <button type="submit" class="btn btn-light text-red-400"><i class="las la-thumbs-up"></i>Follow</button>
                 {% endif %}
               </form>
             {% endif %}

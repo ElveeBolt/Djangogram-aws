@@ -6,6 +6,7 @@
 {% block subtitle %}{{ subtitle }}{% endblock subtitle %}
 
 {% block content %}
+    {% if posts %}
     {% for post in posts %}
     <div class="card mb-4">
         <div class="p-4">
@@ -45,6 +46,9 @@
     </div>
     {% endfor %}
     {% include 'widgets/pagination.html' %}
+    {% else %}
+        {% include 'widgets/empty_content.html' %}
+    {% endif %}
 {% endblock content %}
 
 {% block sideright %}

@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -134,14 +135,19 @@ class PostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 class PostLikeView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
-        post = Post.objects.get(pk=request.POST.get('post_id'))
+        post = Post.objects.get(pk=kwargs.get('pk'))
 
         if post.likes.filter(id=request.user.id).exists():
             post.likes.remove(request.user)
+            status = False
         else:
             post.likes.add(request.user)
+            status = True
 
-        return redirect('post', pk=post.pk)
+        return JsonResponse({
+            'status': status,
+            'count': post.number_of_likes()
+        })
 
 
 class PostDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
