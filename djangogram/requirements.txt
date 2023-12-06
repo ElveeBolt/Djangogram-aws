@@ -4,3 +4,4 @@ Pillow==10.1.0
 gunicorn==21.2.0
 psycopg2-binary==2.9.9
 cloudinary==1.36.0
+social-auth-app-django==5.4.0

@@ -40,6 +40,10 @@
                           Don’t have an account yet? <a href="{% url 'signup' %}" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
                       </p>
                   </form>
+                    <div class="flex justify-between">
+                        <a href="{% url 'social:begin' 'github' %}" class="btn px-3 btn-light"><i class="lab la-github"></i>Login with GitHub</a>
+                        <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn px-3 btn-light"><i class="lab la-google-plus-g"></i>Login with Google</a>
+                    </div>
               </div>
           </div>
       </div>
